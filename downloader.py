@@ -15,22 +15,20 @@ options.add_experimental_option("detach", True)
 options.add_experimental_option("prefs", {"download.default_directory": "/mnt/f/financial_doc"})
 
 # Search company
-# TODO: Open report
-# TODO: get file
+# Open report
+# get file
 
-def open_report(name):
 
 def get_file(num, driver):
     driver.find_elements_by_xpath('//a[@title="사업보고서 공시뷰어 새창"]')[num].click()
     popup_window = driver.window_handles[1]
-    driver.switch_to.window(f_report_window)
+    driver.switch_to.window(popup_window)
     driver.find_element_by_xpath('//a[@href="#download"]').click()
     driver.close()
     popup_window = driver.window_handles[1]
-    driver.switch_to.window(f_download_window)
+    driver.switch_to.window(popup_window)
     driver.find_element_by_xpath("//a").click()
     driver.close()
-
     return
 
 
