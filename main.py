@@ -1,9 +1,9 @@
 import time
-from scrapper import get_text
+from downloader import get_files
 
-print(f"Put company name in which you are interested")
+print(f"Put company's name")
 name = input(">")
 print(f"You're interested in {name}.")
 
-get_text(name)
+get_files(name)
 
