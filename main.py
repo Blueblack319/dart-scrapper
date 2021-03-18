@@ -6,3 +6,4 @@ name = input(">")
 print(f"You're interested in {name}.")
 
 get_text(name)
+
