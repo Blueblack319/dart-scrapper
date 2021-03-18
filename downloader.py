@@ -1,3 +1,5 @@
+from os import path
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -10,13 +12,37 @@ import lxml
 URL = "http://dart.fss.or.kr/"
 PATH = "/usr/bin/chromedriver"
 
-options = Options()
-options.add_experimental_option("detach", True)
-options.add_experimental_option("prefs", {"download.default_directory": "/mnt/f/financial_doc"})
-
 # Search company
 # Open report
 # get file
+
+
+def set_options():
+    options = Options()
+    options.add_experimental_option(
+        "prefs",
+        {
+            "download.default_directory": "/mnt/f/business_report",
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing_for_trusted_sources_enabled": False,
+            "safebrowsing.enabled": False,
+        },
+    )
+    # options.add_experimental_option("detach", True)
+    return options
+
+
+# def enable_download(driver):
+#     driver.command_executor._commands["send_command"] = (
+#         "POST",
+#         "/session/$sessionId/chromium/send_command",
+#     )
+#     params = {
+#         "cmd": "Page.setDownloadBehavior",
+#         "params": {"behavior": "allow", "downloadPath": "/mnt/f/business_report"},
+#     }
+#     driver.execute("send_command", params)
 
 
 def get_file(num, driver):
@@ -28,21 +54,26 @@ def get_file(num, driver):
     popup_window = driver.window_handles[1]
     driver.switch_to.window(popup_window)
     driver.find_element_by_xpath("//a").click()
+    time.sleep(1)
     driver.close()
     return
 
 
 def get_files(name):
-    driver = webdriver.Chrome(PATH, chrome_options=options)
-    driver.get(URL)
-    driver.find_element(By.ID, "textCrpNm").send_keys(name)
-    driver.find_element_by_xpath('//a[@href="#cal8"]').click()
-    driver.find_element_by_xpath('//a[@href="#divPublicType_01"]').click()
-    driver.find_element(By.ID, "publicType1").click()
-    driver.find_element_by_xpath('//input[@type="image"][@alt="검색"]').send_keys(Keys.ENTER)
-    default_window = driver.current_window_handle
-    get_file(0, driver)
-    driver.switch_to.window(default_window)
-    get_file(3, driver)
+    options = set_options()
+    driver = webdriver.Chrome(PATH, options=options)
+    try:
+        driver.get(URL)
+        driver.find_element(By.ID, "textCrpNm").send_keys(name)
+        driver.find_element_by_xpath('//a[@href="#cal8"]').click()
+        driver.find_element_by_xpath('//a[@href="#divPublicType_01"]').click()
+        driver.find_element(By.ID, "publicType1").click()
+        driver.find_element_by_xpath('//input[@type="image"][@alt="검색"]').send_keys(Keys.ENTER)
+        default_window = driver.current_window_handle
+        get_file(0, driver)
+        driver.switch_to.window(default_window)
+        get_file(3, driver)
+    finally:
+        driver.quit()
     return
 
