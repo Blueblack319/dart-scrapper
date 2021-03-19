@@ -17,19 +17,18 @@ PATH = "/usr/bin/chromedriver"
 # get file
 
 
-def set_options():
+def set_options(name):
     options = Options()
     options.add_experimental_option(
         "prefs",
         {
-            "download.default_directory": "/mnt/f/business_report",
+            "download.default_directory": f"/mnt/f/business_report/{name}",
             "download.prompt_for_download": False,
             "download.directory_upgrade": True,
             "safebrowsing_for_trusted_sources_enabled": False,
             "safebrowsing.enabled": False,
         },
     )
-    # options.add_experimental_option("detach", True)
     return options
 
 
@@ -54,13 +53,13 @@ def get_file(num, driver):
     popup_window = driver.window_handles[1]
     driver.switch_to.window(popup_window)
     driver.find_element_by_xpath("//a").click()
-    time.sleep(1)
+    time.sleep(2)
     driver.close()
     return
 
 
 def get_files(name):
-    options = set_options()
+    options = set_options(name)
     driver = webdriver.Chrome(PATH, options=options)
     try:
         driver.get(URL)
